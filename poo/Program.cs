@@ -1,4 +1,6 @@
-﻿interface IGrafico
+﻿using System.Transactions;
+
+interface IGrafico
 {
     public Boolean Mover(int x, int y);
     public void Dibujar();
@@ -17,12 +19,13 @@ public class Punto : IGrafico
 
     public bool Mover(int x, int y)
     {
-        throw new NotImplementedException();
+        if  ((0 > (x + X) && (x + X) > 800) && (0 > (y + Y) && (y + Y) > 600)) return true;
+        else return false;
     }
 
     public void Dibujar()
     {
-        throw new NotImplementedException();
+        Console.WriteLine("X -> "+ X + "Y  -> " + Y);
     }
 }
 
@@ -32,6 +35,19 @@ public class Circulo : Punto
     public Circulo(int x, int y, int radio) : base(x, y)
     {
         Radio = radio;
+    }
+    public new bool Mover (int x, int y)
+    {
+        if (!base.Mover(x, y)) return false;
+        else if ((0 > (y + Y + Radio) || (y + Y + Radio) > 600)) return false;
+        else if (0 > (x + X + Radio) || (x + X + Radio ) > 800) return false;
+        else if ((0 > (y + Y - Radio) || (y + Y - Radio) > 600)) return false;
+        else if (0 > (x + X - Radio) || (x + X - Radio) > 800) return false;
+        else return true;
+    }
+    public new void Dibujar() { 
+        base.Dibujar();
+        Console.WriteLine("Radio -> "+Radio);
     }
 }
 
@@ -44,20 +60,39 @@ public class Rectangulo : Punto
         Ancho = ancho;
         Alto = alto;
     }
+    public new bool Mover(int x, int y)
+    {
+       if(!base.Mover(x, y)) return false;
+       else if((0 < (y + Y + Alto) || (y + Y + Alto) > 600)) return true;
+       else if (0 < (x + X + Ancho) || (x + X + Ancho) > 800) return true;
+       else return false;
+    }
+    public new void Dibujar()
+    {
+        base.Dibujar();
+        Console.WriteLine("Ancho -> " + Ancho + "Alto -> " + Alto);
+    }
 }
 
 public class GraficoCompuesto : IGrafico
 {
-    private List<IGrafico> Graficos = new List<IGrafico>();
+    private List<IGrafico> Elementos = new List<IGrafico>();
 
 
     public void Dibujar()
     {
-        throw new NotImplementedException();
+        foreach (var item in Elementos)
+        {
+            item.Dibujar(); 
+        }
     }
 
     public bool Mover(int x, int y)
     {
-        throw new NotImplementedException();
+        foreach (var item in Elementos)
+        {
+            if (!item.Mover(x, y)) return false;
+        }
+        return true;
     }
 }
