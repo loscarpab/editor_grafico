@@ -57,7 +57,19 @@ public class Circulo : Punto
     public int Radio {  get; private set; }
     public Circulo(int x, int y, int radio) : base(x, y)
     {
-        Radio = radio;
+        try
+        {
+            Radio = radio;
+            if (!this.Mover(0, 0))
+            {
+                Radio = 0;
+                throw new ArgumentOutOfRangeException("El circulo no tiene un radio permitido");
+            }
+        }
+        catch (ArgumentOutOfRangeException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
         
     }
     public override bool Mover (int x, int y)
